@@ -252,11 +252,13 @@ func (c *Controller) reconcileHandler(obj interface{}) bool {
 		// along with a non-nil error. But this is intended as
 		// We need to drive to stable reconcile loops before queuing due
 		// to result.RequestAfter
+		log.Info("requeue_after=============>>>>>>>>>>", "requeue_after", result.RequeueAfter)
 		c.Queue.Forget(obj)
 		c.Queue.AddAfter(req, result.RequeueAfter)
 		ctrlmetrics.ReconcileTotal.WithLabelValues(c.Name, "requeue_after").Inc()
 		return true
 	} else if result.Requeue {
+		log.Info("requeue=============>>>>>>>>>>", "requeue", result.Requeue)
 		c.Queue.AddRateLimited(req)
 		ctrlmetrics.ReconcileTotal.WithLabelValues(c.Name, "requeue").Inc()
 		return true
